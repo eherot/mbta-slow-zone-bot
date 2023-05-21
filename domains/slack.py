@@ -2,28 +2,60 @@ import os
 
 import requests
 
-from utils import format_fixed_slow_zone, format_new_slow_zone
+from ..utils import get_stop_pair, get_zone_date_length
 
 SLOW_ZONE_BOT_SLACK_WEBHOOK_URL = os.environ.get("SLOW_ZONE_BOT_SLACK_WEBHOOK_URL")
 
+def attachment(zone, new):
+    output = {}
 
-def send_new_slow_zone_tweets_slack(
-    sz,
-):
-    for line in sz:
-        for z in line:
-            output = format_new_slow_zone(z)
+    if new:
+        title = "⚠️ New Slow Zone ⚠️"
+        output["color"] = "danger"
+    else:
+        title = "✅ Fixed Slow Zone 🎉"
+        output["color"] = "good"
+
+    output["text"] = title
+    output["title"] = title
+    output["fields"] = fields(zone, new)
+
+    return output
+
+def fields(zone, new):
+    output = {}
+
+    output["stop_pair"] = {
+        "title": "Stop Pair",
+        "value": get_stop_pair(zone)
+    }
+
+    if not new:
+        output["age"] = {
+            "title": "🗓️",
+            "value": str(get_zone_date_length(zone)) + " days "
+        }
+
+    output["delay"] = {
+        "title": "⏳",
+        "value": str(round(zone["delay"], 1)) + "s"
+    }
+    output["delay_ratio"] = {
+        "title": "⬆️",
+        "value": str(round(zone["delay"] / zone["baseline"] * 100, 2)) + "%"
+    }
+
+    return output
+
+def send_slow_zone_slack(lines, new):
+    attachments = []
+
+    for line in lines:
+        for zone in line:
+            attachments += attachment(zone, new)
             requests.post(
                 SLOW_ZONE_BOT_SLACK_WEBHOOK_URL,
-                json={"text": output},
-            )
-
-
-def send_fixed_slow_zone_tweets_slack(sz):
-    for line in sz:
-        for z in line:
-            output = format_fixed_slow_zone(z)
-            requests.post(
-                SLOW_ZONE_BOT_SLACK_WEBHOOK_URL,
-                json={"text": output},
+                json={
+                    "attachments": attachments,
+                },
             )
