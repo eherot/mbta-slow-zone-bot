@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLOW_ZONE_BOT_SLACK_WEBHOOK_URL: ${{ secrets.SLOW_ZONE_BOT_SLACK_WEBHOOK_URL }}/chat.postMessage
+      SLACK_CHANNEL: "#bottest"
       MAX_SLOWZONE_AGE: 5
     steps:
       - name: Checkout repo

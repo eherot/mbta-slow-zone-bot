@@ -50,7 +50,7 @@ def fields(zone, new):
 
     return output
 
-def send_slow_zone_slack(lines, new):
+def send_slow_zone_slack(channel, lines, new):
     attachments = []
 
     for line in lines:
@@ -60,6 +60,7 @@ def send_slow_zone_slack(lines, new):
     requests.post(
         SLOW_ZONE_BOT_SLACK_WEBHOOK_URL,
         json={
+            "channel": channel,
             "attachments": attachments,
         },
     )

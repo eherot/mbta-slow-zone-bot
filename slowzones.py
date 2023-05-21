@@ -22,6 +22,7 @@ MASTODON_CLIENT_KEY = os.environ.get("MASTODON_CLIENT_KEY")
 MASTODON_CLIENT_SECRET = os.environ.get("MASTODON_CLIENT_SECRET")
 MASTODON_ACCESS_TOKEN = os.environ.get("MASTODON_ACCESS_TOKEN")
 SLOW_ZONE_BOT_SLACK_WEBHOOK_URL = os.environ.get("SLOW_ZONE_BOT_SLACK_WEBHOOK_URL")
+SLACK_CHANNEL = os.environ.get("SLACK_CHANNEL", "#slowzonebot")
 
 MAX_SLOWZONE_AGE = int(os.environ.get("MAX_SLOWZONE_AGE", 1))
 DRY_RUN = False
@@ -83,8 +84,8 @@ def main():
             send_fixed_slow_zone_toots(ended_slowzones, mastodon_client)
 
         if SLOW_ZONE_BOT_SLACK_WEBHOOK_URL:
-            send_slow_zone_slack(new_slowzones, True)
-            send_slow_zone_slack(ended_slowzones, False)
+            send_slow_zone_slack(SLACK_CHANNEL, new_slowzones, True)
+            send_slow_zone_slack(SLACK_CHANNEL, ended_slowzones, False)
 
 
     # exit if no issues
