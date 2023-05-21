@@ -1,0 +1,21 @@
+name: run
+
+on: [push]
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    env:
+      SLOW_ZONE_BOT_SLACK_WEBHOOK_URL: ${{ secrets.SLOW_ZONE_BOT_SLACK_WEBHOOK_URL }}/chat.postMessage
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - name: Run MBTA Slow Zone Bot in Debug mode
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
+          poetry run python3 slowzones.py --debug
