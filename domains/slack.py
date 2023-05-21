@@ -1,6 +1,6 @@
 import os
 
-import requests
+import requests, logging
 
 from utils import get_stop_pair, get_zone_date_length
 
@@ -57,10 +57,13 @@ def send_slow_zone_slack(channel, lines, new):
         for zone in line:
             attachments += attachment(zone, new)
 
+    json = {
+        "attachments": attachments,
+    }
+
+    logging.debug(f"Sending slack message: {json}")
+
     requests.post(
         SLOW_ZONE_BOT_SLACK_WEBHOOK_URL,
-        json={
-            "channel": channel,
-            "attachments": attachments,
-        },
+        json = json,
     )
