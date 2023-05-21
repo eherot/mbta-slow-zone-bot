@@ -21,6 +21,7 @@ TWITTER_CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET")
 MASTODON_CLIENT_KEY = os.environ.get("MASTODON_CLIENT_KEY")
 MASTODON_CLIENT_SECRET = os.environ.get("MASTODON_CLIENT_SECRET")
 MASTODON_ACCESS_TOKEN = os.environ.get("MASTODON_ACCESS_TOKEN")
+SLOW_ZONE_BOT_SLACK_WEBHOOK_URL = os.environ.get("SLOW_ZONE_BOT_SLACK_WEBHOOK_URL")
 
 MAX_SLOWZONE_AGE = int(os.environ.get("MAX_SLOWZONE_AGE", 1))
 DRY_RUN = False
@@ -73,14 +74,18 @@ def main():
         logging.debug(f"post_text_map: {post_text_map}")
 
     if not DRY_RUN:
-        send_new_slow_zone_tweets(new_slowzones, twitter_client)
-        send_new_slow_zone_toots(new_slowzones, mastodon_client)
+        if TWITTER_ACCESS_KEY:
+            send_new_slow_zone_tweets(new_slowzones, twitter_client)
+            send_fixed_slow_zone_tweets(ended_slowzones, twitter_client)
 
-        send_slow_zone_slack(new_slowzones, True)
-        send_slow_zone_slack(ended_slowzones, False)
+        if MASTODON_ACCESS_TOKEN:
+            send_new_slow_zone_toots(new_slowzones, mastodon_client)
+            send_fixed_slow_zone_toots(ended_slowzones, mastodon_client)
 
-        send_fixed_slow_zone_tweets(ended_slowzones, twitter_client)
-        send_fixed_slow_zone_toots(ended_slowzones, mastodon_client)
+        if SLOW_ZONE_BOT_SLACK_WEBHOOK_URL:
+            send_slow_zone_slack(new_slowzones, True)
+            send_slow_zone_slack(ended_slowzones, False)
+
 
     # exit if no issues
     sys.exit(0)
