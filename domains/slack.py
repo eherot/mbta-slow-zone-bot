@@ -33,16 +33,19 @@ def fields(zone, new):
     if not new:
         output["age"] = {
             "title": "🗓️",
-            "value": str(get_zone_date_length(zone)) + " days "
+            "value": str(get_zone_date_length(zone)) + " days ",
+            "short": True
         }
 
     output["delay"] = {
         "title": "⏳",
-        "value": str(round(zone["delay"], 1)) + "s"
+        "value": str(round(zone["delay"], 1)) + "s",
+        "short": True
     }
     output["delay_ratio"] = {
         "title": "⬆️",
-        "value": str(round(zone["delay"] / zone["baseline"] * 100, 2)) + "%"
+        "value": str(round(zone["delay"] / zone["baseline"] * 100, 2)) + "%",
+        "short": True
     }
 
     return output
