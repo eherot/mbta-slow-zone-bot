@@ -23,6 +23,8 @@ TWITTER_CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET")
 MASTODON_CLIENT_KEY = os.environ.get("MASTODON_CLIENT_KEY")
 MASTODON_CLIENT_SECRET = os.environ.get("MASTODON_CLIENT_SECRET")
 MASTODON_ACCESS_TOKEN = os.environ.get("MASTODON_ACCESS_TOKEN")
+
+MAX_SLOWZONE_AGE = os.environ.get("AGE_LIMIT", 1)
 DRY_RUN = False
 DEBUG = False
 
@@ -54,14 +56,14 @@ def main():
     slowzones_ended_yesterday = generate_grouped_slow_zone_list(
         # Slow zones are 1 day behind so we want to check if zones ended two days ago
         slow_zones.json(),
-        date.today() - timedelta(days=1),
+        date.today() - timedelta(days=MAX_SLOWZONE_AGE),
     )
     logging.info(f"slowzones_ended_yesterday: {slowzones_ended_yesterday}")
 
     slowzones_started_yesterday = generate_new_slow_zones_list(
         # Slow zones take 4 days to be recognized
         slow_zones.json(),
-        date.today() - timedelta(days=3),
+        date.today() - timedelta(days=MAX_SLOWZONE_AGE + 2),
     )
     logging.info(f"slowzones_started_yesterday: {slowzones_started_yesterday}")
 
