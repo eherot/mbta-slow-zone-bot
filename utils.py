@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import json
 import operator
 from itertools import groupby
@@ -60,25 +60,13 @@ def chunks(lines, n):
         yield lines[i : i + n]
 
 
-def generate_new_slow_zones_list(sz, date):
-    today_slow_zones = filter(
-        lambda s: format_time(s["start"]).ctime() == (date - timedelta(days=1)).ctime(),
+def generate_grouped_slow_zone_list(sz, filter_key, days_ago_start, days_ago_end):
+    end_date = date.today() - timedelta(days=days_ago_end)
+    filtered_slow_zones = filter(
+        lambda s: format_time(s[filter_key]).ctime() == (end_date - timedelta(days=days_ago_start)).ctime(),
         sz,
     )
-    sorted_slow_zones = sorted(today_slow_zones, key=operator.itemgetter("color"))
-    logging.debug(f"sorted_slow_zones: {sorted_slow_zones}")
-    outputList = []
-    for i, g in groupby(sorted_slow_zones, key=operator.itemgetter("color")):
-        outputList.append(list(g))
-    return outputList
-
-
-def generate_grouped_slow_zone_list(sz, date):
-    today_slow_zones = filter(
-        lambda s: format_time(s["end"]).ctime() == (date - timedelta(days=1)).ctime(),
-        sz,
-    )
-    sorted_slow_zones = sorted(today_slow_zones, key=operator.itemgetter("color"))
+    sorted_slow_zones = sorted(filtered_slow_zones, key=operator.itemgetter("color"))
     logging.debug(f"sorted_slow_zones: {sorted_slow_zones}")
     outputList = []
     for i, g in groupby(sorted_slow_zones, key=operator.itemgetter("color")):
