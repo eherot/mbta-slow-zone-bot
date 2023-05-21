@@ -2,7 +2,7 @@ import os
 
 import requests
 
-from ..utils import get_stop_pair, get_zone_date_length
+from utils import get_stop_pair, get_zone_date_length
 
 SLOW_ZONE_BOT_SLACK_WEBHOOK_URL = os.environ.get("SLOW_ZONE_BOT_SLACK_WEBHOOK_URL")
 
