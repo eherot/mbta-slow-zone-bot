@@ -18,10 +18,11 @@ from utils import (
 import sys
 import os
 
-ACCESS_KEY = os.environ.get("ACCESS_KEY")
-ACCESS_SECRET = os.environ.get("ACCESS_SECRET")
-CONSUMER_KEY = os.environ.get("CONSUMER_KEY")
-CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET")
+TWITTER_ACCESS_KEY = os.environ.get("ACCESS_KEY")
+TWITTER_ACCESS_SECRET = os.environ.get("ACCESS_SECRET")
+TWITTER_BEARER_TOKEN = os.environ.get("BEARER_TOKEN")
+TWITTER_CONSUMER_KEY = os.environ.get("CONSUMER_KEY")
+TWITTER_CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET")
 MASTODON_CLIENT_KEY = os.environ.get("MASTODON_CLIENT_KEY")
 MASTODON_CLIENT_SECRET = os.environ.get("MASTODON_CLIENT_SECRET")
 MASTODON_ACCESS_TOKEN = os.environ.get("MASTODON_ACCESS_TOKEN")
@@ -29,11 +30,11 @@ DRY_RUN = False
 DEBUG = False
 
 twitter_client = api = tweepy.Client(
-    bearer_token=os.environ.get("BEARER_TOKEN"),
-    access_token=ACCESS_KEY,
-    access_token_secret=ACCESS_SECRET,
-    consumer_key=CONSUMER_KEY,
-    consumer_secret=CONSUMER_SECRET,
+    bearer_token=TWITTER_BEARER_TOKEN,
+    access_token=TWITTER_ACCESS_KEY,
+    access_token_secret=TWITTER_ACCESS_SECRET,
+    consumer_key=TWITTER_CONSUMER_KEY,
+    consumer_secret=TWITTER_CONSUMER_SECRET,
 )
 
 mastodon_client = mastodon.Mastodon(
